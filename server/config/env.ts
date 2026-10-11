@@ -21,7 +21,9 @@ export const env = {
   DATABASE_PATH:
     process.env.DATABASE_PATH ||
     (process.env.VERCEL === '1' ? '/tmp/database.sqlite' : './data/database.sqlite'),
-  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  CORS_ORIGIN:
+    process.env.CORS_ORIGIN ||
+    (isProduction ? 'https://webvision-tech-githubio.vercel.app' : 'http://localhost:5173'),
 
   // SMTP – SERVER-ONLY secrets, never sent to frontend
   SMTP_HOST: process.env.SMTP_HOST || '',

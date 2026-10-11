@@ -135,6 +135,8 @@ DATABASE_PATH=./data/database.sqlite
 CORS_ORIGIN=http://localhost:5173
 ```
 
+For production, set `CORS_ORIGIN` to the exact public origin serving the frontend.
+
 ---
 
 ## 🚀 How to Run Locally
