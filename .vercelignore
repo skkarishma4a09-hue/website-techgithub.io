@@ -5,7 +5,7 @@
 .vercel
 node_modules
 dist
-data
-scratch
-servererr*.txt
-serverlog*.txt
+/data
+/scratch
+/servererr*.txt
+/serverlog*.txt
