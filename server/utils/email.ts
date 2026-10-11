@@ -29,10 +29,6 @@ export async function createVerificationToken(userId: string, type: TokenType, e
     },
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[DEV MODE TOKEN]: Generated ${type} token for user ${userId}: ${token}`);
-  }
-
   return record;
 }
 

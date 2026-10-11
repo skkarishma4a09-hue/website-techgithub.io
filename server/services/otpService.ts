@@ -85,7 +85,7 @@ export async function requestOtp(
   const resendAt = new Date(Date.now() + env.OTP_RESEND_COOLDOWN_SECONDS * 1000);
 
   // Save hashed OTP record
-  await prisma.oTPVerification.create({
+  const verification = await prisma.oTPVerification.create({
     data: {
       email: normalizedEmail,
       userId: existingUser?.id ?? null,
@@ -99,6 +99,11 @@ export async function requestOtp(
   try {
     await sendOtpEmail(normalizedEmail, otp);
   } catch (err) {
+    await prisma.oTPVerification.update({
+      where: { id: verification.id },
+      data: { usedAt: new Date() },
+    });
+
     if (err instanceof SmtpNotConfiguredError) {
       await logAuditEvent({
         actorId: existingUser?.id,
@@ -109,8 +114,7 @@ export async function requestOtp(
         ipAddress: meta?.ip,
         userAgent: meta?.userAgent,
       });
-      if (env.NODE_ENV === 'production') { throw { code: 'SMTP_NOT_CONFIGURED', message: 'Email service is not configured. Please contact support.' }; }
-      console.log('[DEV] SMTP not configured - verification code for ' + maskEmail(normalizedEmail) + ' is ' + otp); // dev fallback - never returned via the API
+      throw { code: 'SMTP_NOT_CONFIGURED', message: 'Email service is not configured. Please contact support.' };
     }
     if (err instanceof SmtpDeliveryError) {
       await logAuditEvent({
@@ -267,7 +271,7 @@ export async function verifyOtp(
   );
   const refreshToken = crypto.randomBytes(40).toString('hex');
 
-  const sessionRepo = await import('../repositories/sessionRepository');
+  const sessionRepo = await import('../repositories/sessionRepository.js');
   await sessionRepo.SessionRepository.createSession({
     userId: existingUser.id,
     token: sessionToken,
