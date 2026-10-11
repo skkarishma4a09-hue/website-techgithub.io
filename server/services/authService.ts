@@ -9,6 +9,68 @@ import { createVerificationToken, verifyToken, TokenType } from '../utils/email.
 import type { Role } from '../repositories/userRepository.js';
 
 export class AuthService {
+  static async loginWithGoogle(
+    identity: { email: string; name: string | null; subject: string },
+    meta?: { ip?: string; userAgent?: string }
+  ) {
+    let user = await UserRepository.findByEmail(identity.email);
+    let isNewUser = false;
+
+    if (user) {
+      user = await UserRepository.markGoogleLogin(user.id, user.name ? undefined : identity.name);
+    } else {
+      try {
+        user = await UserRepository.createGoogleUser(identity.email, identity.name || identity.email.split('@')[0]);
+        isNewUser = true;
+      } catch (error) {
+        if (!error || typeof error !== 'object' || !('code' in error) || error.code !== 'P2002') {
+          throw error;
+        }
+
+        const racedUser = await UserRepository.findByEmail(identity.email);
+        if (!racedUser) throw error;
+        user = await UserRepository.markGoogleLogin(racedUser.id, racedUser.name ? undefined : identity.name);
+      }
+    }
+
+    const accessToken = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role, jti: crypto.randomUUID() },
+      env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    const refreshToken = crypto.randomBytes(40).toString('hex');
+
+    await SessionRepository.createSession({
+      userId: user.id,
+      token: accessToken,
+      refreshToken,
+      ipAddress: meta?.ip,
+      userAgent: meta?.userAgent,
+    });
+
+    await logAuditEvent({
+      actorId: user.id,
+      action: isNewUser ? 'REGISTER_GOOGLE' : 'LOGIN_GOOGLE',
+      resource: 'User',
+      result: 'SUCCESS',
+      metadata: { provider: 'Google' },
+      ipAddress: meta?.ip,
+      userAgent: meta?.userAgent,
+    });
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        emailVerified: user.emailVerified,
+        isNewUser,
+      },
+      token: accessToken,
+    };
+  }
+
   static async register(data: { name: string; email: string; password: string; role?: Role }, meta?: { ip?: string; userAgent?: string }) {
     const existing = await UserRepository.findByEmail(data.email);
     if (existing) {

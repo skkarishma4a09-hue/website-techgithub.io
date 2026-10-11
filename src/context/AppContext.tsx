@@ -54,6 +54,7 @@ interface Ctx {
   profile: UserProfile | null;
   authLoading: boolean;
   // OTP auth methods
+  signInWithGoogle: (credential: string) => Promise<void>;
   sendOtp: (email: string) => Promise<{ success: boolean; resendAvailableAt?: Date }>;
   verifyOtp: (email: string, otp: string) => Promise<{ success: boolean; isNewUser: boolean }>;
   resendOtp: (email: string) => Promise<{ success: boolean; resendAvailableAt?: Date }>;
@@ -149,6 +150,34 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // ─── OTP auth methods ──────────────────────────────────────────
+  const signInWithGoogle = useCallback(async (credential: string) => {
+    const res = await api.googleLogin(credential);
+    const userData = res.data?.user;
+    if (!res.data?.authenticated || !userData) {
+      throw new Error('Google sign-in could not be completed. Please try again.');
+    }
+
+    if (res.data.token) setAuthToken(res.data.token);
+    setUser({
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+      emailVerified: userData.emailVerified,
+      isNewUser: userData.isNewUser,
+    });
+    setAuthState('authenticated');
+    await refreshProfile();
+    const displayName = userData.name || userData.email.split('@')[0];
+    addToast(
+      'success',
+      userData.isNewUser
+        ? `Welcome to Project Content AI Marketplace, ${displayName}!`
+        : `Welcome back, ${displayName}!`
+    );
+    setAuthView(null);
+  }, [addToast, refreshProfile, setAuthView]);
+
   const sendOtp = useCallback(async (email: string) => {
     const res = await api.requestOtp(email);
     return { success: res.data?.success ?? true };
@@ -335,6 +364,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setUser,
         profile,
         authLoading,
+        signInWithGoogle,
         sendOtp,
         verifyOtp,
         resendOtp,

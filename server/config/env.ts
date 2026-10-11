@@ -33,6 +33,7 @@ export const env = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD || '',
   SMTP_FROM: process.env.SMTP_FROM || '',
   SMTP_FROM_NAME: process.env.SMTP_FROM_NAME || 'Project Content AI Marketplace',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
 
   // OTP security settings (configurable via env)
   OTP_EXPIRY_SECONDS: parseInt(process.env.OTP_EXPIRY_SECONDS || '300', 10),         // 5 min default

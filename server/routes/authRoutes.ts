@@ -10,6 +10,7 @@ const router = Router();
 router.post('/request-otp', otpRateLimiter, OTPController.requestOtp);
 router.post('/verify-otp', otpRateLimiter, OTPController.verifyOtp);
 router.post('/resend-otp', otpRateLimiter, OTPController.resendOtp);
+router.post('/google', authRateLimiter, AuthController.googleLogin);
 
 // ─── Session Management ────────────────────────────────────────
 router.get('/me', authenticateToken, AuthController.getCurrentUser);

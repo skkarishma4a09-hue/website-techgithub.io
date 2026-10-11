@@ -55,6 +55,8 @@ export const api = {
     request<any>('/auth/verify-otp', { method: 'POST', body: JSON.stringify({ email, otp }) }),
   resendOtp: (email: string) =>
     request<any>('/auth/resend-otp', { method: 'POST', body: JSON.stringify({ email }) }),
+  googleLogin: (credential: string) =>
+    request<any>('/auth/google', { method: 'POST', body: JSON.stringify({ credential }) }),
 
   // ─── Session ──────────────────────────────────────────────
   getCurrentUser: () => request<any>('/auth/me'),

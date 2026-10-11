@@ -45,6 +45,36 @@ export class UserRepository {
     });
   }
 
+  static async createGoogleUser(email: string, name: string) {
+    const normalizedEmail = email.toLowerCase().trim();
+    return prisma.user.create({
+      data: {
+        email: normalizedEmail,
+        password: null,
+        name,
+        role: 'USER',
+        emailVerified: true,
+        lastLoginAt: new Date(),
+        profile: {
+          create: { name },
+        },
+      },
+      include: { profile: true },
+    });
+  }
+
+  static async markGoogleLogin(userId: string, name?: string | null) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: {
+        emailVerified: true,
+        lastLoginAt: new Date(),
+        name: name || undefined,
+      },
+      include: { profile: true },
+    });
+  }
+
   static async create(data: {
     name: string;
     email: string;

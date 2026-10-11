@@ -5,6 +5,22 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (options: {
+            client_id: string;
+            callback: (response: { credential?: string }) => void;
+          }) => void;
+          renderButton: (element: HTMLElement, options: Record<string, string | number>) => void;
+        };
+      };
+    };
+  }
+}
+
 // ─────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────
@@ -149,15 +165,18 @@ interface ErrorState {
 }
 
 export default function AuthModal() {
-  const { authView, setAuthView, sendOtp, verifyOtp, resendOtp } = useApp();
+  const { authView, setAuthView, signInWithGoogle, sendOtp, verifyOtp, resendOtp } = useApp();
 
   const [phase, setPhase] = useState<Phase>('email');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<ErrorState | null>(null);
+  const [googleSetupMessage, setGoogleSetupMessage] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
   const [successUser, setSuccessUser] = useState<{ email: string; isNewUser: boolean } | null>(null);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
   // Reset when modal opens/closes
   useEffect(() => {
@@ -177,6 +196,73 @@ export default function AuthModal() {
     const t = setInterval(() => setCountdown((c) => c - 1), 1000);
     return () => clearInterval(t);
   }, [countdown]);
+
+  useEffect(() => {
+    const button = googleButtonRef.current;
+    if (!authView || phase !== 'email' || !button) return;
+
+    button.replaceChildren();
+    setGoogleSetupMessage(null);
+    if (!googleClientId) {
+      setGoogleSetupMessage('Google Sign-In needs to be configured for this deployment.');
+      return;
+    }
+
+    let cancelled = false;
+    const renderGoogleButton = () => {
+      if (cancelled || !window.google) return;
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: ({ credential }) => {
+          if (!credential) {
+            setErr({ message: 'Google sign-in was cancelled or could not be completed.' });
+            return;
+          }
+          setLoading(true);
+          setErr(null);
+          void signInWithGoogle(credential)
+            .catch((error: any) => {
+              setErr({ message: error?.message || 'Google sign-in failed. Please try again.' });
+            })
+            .finally(() => setLoading(false));
+        },
+      });
+      window.google.accounts.id.renderButton(button, {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'rectangular',
+        width: Math.min(320, Math.floor(button.clientWidth || 320)),
+      });
+    };
+
+    let script = document.getElementById('google-identity-services') as HTMLScriptElement | null;
+    const handleScriptError = () => {
+      if (!cancelled) setGoogleSetupMessage('Google Sign-In could not load. Check your connection and try again.');
+    };
+
+    if (window.google) {
+      renderGoogleButton();
+    } else {
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'google-identity-services';
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.defer = true;
+      }
+      script.addEventListener('load', renderGoogleButton, { once: true });
+      script.addEventListener('error', handleScriptError, { once: true });
+      if (!script.isConnected) document.head.appendChild(script);
+    }
+
+    return () => {
+      cancelled = true;
+      script?.removeEventListener('load', renderGoogleButton);
+      script?.removeEventListener('error', handleScriptError);
+      button.replaceChildren();
+    };
+  }, [authView, googleClientId, phase, signInWithGoogle]);
 
   const close = useCallback(() => {
     setAuthView(null);
@@ -396,7 +482,57 @@ export default function AuthModal() {
             <div>
               <div style={{ marginBottom: 28 }}>
                 <h2 style={{ fontSize: 22, fontWeight: 700, color: '#f1f5f9', marginBottom: 6 }}>Welcome</h2>
-                <p style={{ fontSize: 14, color: 'rgba(241,245,249,0.5)' }}>Sign in securely with your email — no password needed.</p>
+                <p style={{ fontSize: 14, color: 'rgba(241,245,249,0.5)' }}>Sign in securely with Google or email — no password needed.</p>
+              </div>
+
+              {googleClientId ? (
+                <div
+                  ref={googleButtonRef}
+                  aria-label="Continue with Google"
+                  style={{ display: 'flex', justifyContent: 'center', minHeight: 44, marginBottom: 8 }}
+                />
+              ) : (
+                <button
+                  type="button"
+                  aria-label="Continue with Google — configuration required"
+                  disabled
+                  style={{
+                    width: '100%',
+                    minHeight: 44,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 10,
+                    marginBottom: 8,
+                    borderRadius: 6,
+                    border: '1px solid rgba(255,255,255,0.22)',
+                    background: '#fff',
+                    color: '#3c4043',
+                    fontSize: 14,
+                    fontWeight: 600,
+                    opacity: 0.75,
+                    cursor: 'not-allowed',
+                  }}
+                >
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 48 48">
+                    <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.7-.4-4H24v7.6h11c-.5 2.4-1.9 4.4-4.1 5.8v5h6.7c3.9-3.6 6-8.5 6-14.4z" />
+                    <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.7-5c-1.9 1.3-4.2 2.1-6.8 2.1-5.2 0-9.6-3.5-11.2-8.2h-6.9v5.2C9.3 39.6 16.2 44 24 44z" />
+                    <path fill="#FBBC05" d="M12.8 28c-.4-1.2-.7-2.6-.7-4s.3-2.8.7-4v-5.2h-6.9C4.5 17.7 3.7 20.8 3.7 24s.8 6.3 2.2 9.2l6.9-5.2z" />
+                    <path fill="#EA4335" d="M24 11.8c3 0 5.7 1 7.8 3l5.9-5.9C34.1 5.6 29.5 4 24 4 16.2 4 9.3 8.4 5.9 14.8l6.9 5.2c1.6-4.7 6-8.2 11.2-8.2z" />
+                  </svg>
+                  Continue with Google
+                </button>
+              )}
+              {googleSetupMessage && (
+                <p role="status" style={{ fontSize: 12, color: 'rgba(241,245,249,0.5)', textAlign: 'center', margin: '0 0 16px' }}>
+                  {googleSetupMessage}
+                </p>
+              )}
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '14px 0 20px', color: 'rgba(241,245,249,0.35)', fontSize: 12 }}>
+                <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.1)' }} />
+                Or continue with email
+                <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.1)' }} />
               </div>
 
               <div style={{ marginBottom: 16 }}>

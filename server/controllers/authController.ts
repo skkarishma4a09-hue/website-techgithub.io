@@ -1,9 +1,41 @@
 import { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import { AuthService } from '../services/authService.js';
 import { sendSuccess, sendError } from '../utils/apiResponse.js';
 import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from '../validators/authValidator.js';
+import { GoogleAuthError, verifyGoogleCredential } from '../services/googleIdentityService.js';
 
 export class AuthController {
+  static async googleLogin(req: Request, res: Response, next: NextFunction) {
+    try {
+      const parsed = z.object({ credential: z.string().min(1).max(8192) }).safeParse(req.body);
+      if (!parsed.success) {
+        return sendError(res, 'VALIDATION_ERROR', 'A Google credential is required.', 400);
+      }
+
+      const identity = await verifyGoogleCredential(parsed.data.credential);
+      const result = await AuthService.loginWithGoogle(identity, {
+        ip: req.ip,
+        userAgent: req.headers['user-agent'],
+      });
+
+      res.cookie('accessToken', result.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return sendSuccess(res, { ...result, authenticated: true }, 200, 'Google sign-in successful');
+    } catch (error) {
+      if (error instanceof GoogleAuthError) {
+        const status = error.code === 'GOOGLE_AUTH_NOT_CONFIGURED' ? 503 : 401;
+        return sendError(res, error.code, error.message, status);
+      }
+      next(error);
+    }
+  }
+
   static async register(req: Request, res: Response, next: NextFunction) {
     try {
       const parsed = registerSchema.safeParse(req.body);

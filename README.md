@@ -137,6 +137,17 @@ CORS_ORIGIN=http://localhost:5173
 
 For production, set `CORS_ORIGIN` to the exact public origin serving the frontend.
 
+### Google Sign-In (email OTP remains available)
+
+Google Sign-In authenticates with Google and does not use the SMTP/OTP service. Configure a **Web application** OAuth client in [Google Cloud Console](https://console.cloud.google.com/):
+
+1. Configure the OAuth consent screen and add test users if the app remains in Testing.
+2. Add `https://webvision-tech-githubio.vercel.app` to **Authorized JavaScript origins**. No redirect URI is used by the Google Identity Services credential flow.
+3. Set the resulting client ID as both `GOOGLE_CLIENT_ID` (backend token audience validation) and `VITE_GOOGLE_CLIENT_ID` (frontend button) in Vercel Production. The client ID is public; never put a client secret in frontend variables or code.
+4. Add both variables to local `.env` for development, then rebuild/redeploy after setting them in Vercel.
+
+The backend verifies Google's signed identity token, audience, issuer, expiration, and verified email before creating a regular application session. An existing account with the same verified email is used instead of creating a duplicate. If the Google client ID is not configured, the Google option remains visibly unavailable while email OTP continues to work.
+
 ---
 
 ## 🚀 How to Run Locally
