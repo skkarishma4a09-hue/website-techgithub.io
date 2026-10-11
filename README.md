@@ -141,6 +141,8 @@ For production, set `CORS_ORIGIN` to the exact public origin serving the fronten
 
 ## 🚀 How to Run Locally
 
+Run the OTP request rate-limit tests with `npm run test:otp`.
+
 ### 1. Seed Development Database
 ```bash
 npm run seed

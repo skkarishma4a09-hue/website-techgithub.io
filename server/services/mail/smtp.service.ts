@@ -83,11 +83,10 @@ export async function sendOtpEmail(to: string, otp: string): Promise<void> {
 
   try {
     await transporter.sendMail(mailOptions);
-    // Log delivery success (no OTP in log)
-    console.log(`[SMTP] OTP email delivered to ${maskEmail(to)}`);
-  } catch (err: any) {
-    // Log technical details server-side only
-    console.error('[SMTP] Delivery failure:', err?.message || err);
+    // SMTP acceptance does not prove inbox delivery.
+    console.log(`[SMTP] OTP email accepted for ${maskEmail(to)}`);
+  } catch {
+    console.error('[SMTP] Delivery failed. Check the SMTP connection, credentials, and sender configuration.');
     throw new SmtpDeliveryError('Failed to deliver verification email. Please try again.');
   } finally {
     transporter.close();

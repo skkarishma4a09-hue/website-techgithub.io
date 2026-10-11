@@ -35,7 +35,7 @@ export class OTPController {
       const result = await requestOtp(parsed.data.email, meta);
 
       if (!result.success) {
-        return sendError(res, 'RESEND_COOLDOWN', result.message, 429, {
+        return sendError(res, result.code || 'RESEND_COOLDOWN', result.message, 429, {
           resendAvailableAt: result.resendAvailableAt,
         });
       }
@@ -113,7 +113,7 @@ export class OTPController {
       const result = await resendOtp(parsed.data.email, meta);
 
       if (!result.success) {
-        return sendError(res, 'RESEND_COOLDOWN', result.message, 429, {
+        return sendError(res, result.code || 'RESEND_COOLDOWN', result.message, 429, {
           resendAvailableAt: result.resendAvailableAt,
         });
       }

@@ -40,7 +40,25 @@ function hashOTP(otp: string): string {
 export interface RequestOtpResult {
   success: boolean;
   message: string;
+  code?: 'OTP_RATE_LIMIT' | 'RESEND_COOLDOWN';
   resendAvailableAt?: Date;
+}
+
+export function getOtpRequestLimitResult(
+  requestsInPastHour: number,
+  maxRequestsPerHour: number,
+  oldestRequestAt?: Date
+): RequestOtpResult | null {
+  if (requestsInPastHour < maxRequestsPerHour) return null;
+
+  return {
+    success: false,
+    code: 'OTP_RATE_LIMIT',
+    message: 'Too many verification code requests. Please try again later.',
+    resendAvailableAt: oldestRequestAt
+      ? new Date(oldestRequestAt.getTime() + 60 * 60 * 1000)
+      : undefined,
+  };
 }
 
 export async function requestOtp(
@@ -48,6 +66,31 @@ export async function requestOtp(
   meta?: { ip?: string; userAgent?: string }
 ): Promise<RequestOtpResult> {
   const normalizedEmail = email.toLowerCase().trim();
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const requestsInPastHour = await prisma.oTPVerification.count({
+    where: {
+      email: normalizedEmail,
+      createdAt: { gte: oneHourAgo },
+    },
+  });
+
+  if (requestsInPastHour >= env.OTP_MAX_REQUESTS_PER_HOUR) {
+    const oldestRequest = await prisma.oTPVerification.findFirst({
+      where: {
+        email: normalizedEmail,
+        createdAt: { gte: oneHourAgo },
+      },
+      orderBy: { createdAt: 'asc' },
+      select: { createdAt: true },
+    });
+
+    const limitResult = getOtpRequestLimitResult(
+      requestsInPastHour,
+      env.OTP_MAX_REQUESTS_PER_HOUR,
+      oldestRequest?.createdAt
+    );
+    if (limitResult) return limitResult;
+  }
 
   // Check for active unexpired OTP with resend cooldown
   const recent = await prisma.oTPVerification.findFirst({
@@ -63,6 +106,7 @@ export async function requestOtp(
     // Still within cooldown window
     return {
       success: false,
+      code: 'RESEND_COOLDOWN',
       message: `Please wait before requesting another code.`,
       resendAvailableAt: recent.resendAt,
     };

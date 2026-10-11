@@ -10,6 +10,7 @@
     "seed": "npm run seed:jobs && npm run seed:marketplace",
     "seed:jobs": "prisma generate --schema prisma/schema.prisma && tsx server/seed.ts",
     "seed:marketplace": "prisma generate --schema prisma/schema.prisma && tsx server/seedMarketplace.ts",
+    "test:otp": "tsx --test server/tests/otpRateLimit.test.ts",
     "postinstall": "prisma generate",
     "build": "prisma generate --schema prisma/schema.postgres.prisma && npx tsc && vite build",
     "db:push:postgres": "prisma db push --schema prisma/schema.postgres.prisma",

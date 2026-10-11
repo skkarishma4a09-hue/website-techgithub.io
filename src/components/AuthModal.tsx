@@ -201,7 +201,7 @@ export default function AuthModal() {
       } else if (code === 'SMTP_DELIVERY_FAILED') {
         setErr({ message: "We couldn't send the verification email. Please try again.", code });
       } else if (e?.status === 429) {
-        setErr({ message: 'Too many requests. Please wait before trying again.', code: 'TOO_MANY_REQUESTS' });
+        setErr({ message: e?.message || 'Too many requests. Please wait before trying again.', code: e?.code || 'TOO_MANY_REQUESTS' });
       } else {
         setErr({ message: e?.message || 'Connection problem. Please try again.' });
       }
@@ -257,7 +257,7 @@ export default function AuthModal() {
       await resendOtp(email);
       setCountdown(60);
     } catch (e: any) {
-      if (e?.code === 'RESEND_COOLDOWN') {
+      if (e?.code === 'RESEND_COOLDOWN' || e?.code === 'OTP_RATE_LIMIT') {
         setErr({ message: e.message });
       } else {
         setErr({ message: "We couldn't resend the code. Please try again." });
