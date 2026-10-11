@@ -172,6 +172,7 @@ export default function AuthModal() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<ErrorState | null>(null);
+  const [googleErr, setGoogleErr] = useState<ErrorState | null>(null);
   const [googleSetupMessage, setGoogleSetupMessage] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
   const [successUser, setSuccessUser] = useState<{ email: string; isNewUser: boolean } | null>(null);
@@ -185,6 +186,7 @@ export default function AuthModal() {
       setEmail('');
       setOtp(['', '', '', '', '', '']);
       setErr(null);
+      setGoogleErr(null);
       setLoading(false);
       setCountdown(0);
     }
@@ -215,14 +217,14 @@ export default function AuthModal() {
         client_id: googleClientId,
         callback: ({ credential }) => {
           if (!credential) {
-            setErr({ message: 'Google sign-in was cancelled or could not be completed.' });
+            setGoogleErr({ message: 'Google sign-in was cancelled or could not be completed.' });
             return;
           }
           setLoading(true);
-          setErr(null);
+          setGoogleErr(null);
           void signInWithGoogle(credential)
             .catch((error: any) => {
-              setErr({ message: error?.message || 'Google sign-in failed. Please try again.' });
+              setGoogleErr({ message: error?.message || 'Google sign-in failed. Please try again.' });
             })
             .finally(() => setLoading(false));
         },
@@ -466,17 +468,6 @@ export default function AuthModal() {
             <X size={14} />
           </button>
 
-          {/* Error display */}
-          {err && phase !== 'success' && (
-            <div
-              role="alert"
-              style={{ display: 'flex', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, marginBottom: 20 }}
-            >
-              <AlertCircle size={14} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
-              <span style={{ fontSize: 13, color: '#ef4444', lineHeight: 1.4 }}>{err.message}</span>
-            </div>
-          )}
-
           {/* ─ PHASE: EMAIL ─ */}
           {phase === 'email' && (
             <div>
@@ -528,12 +519,31 @@ export default function AuthModal() {
                   {googleSetupMessage}
                 </p>
               )}
+              {googleErr && (
+                <div
+                  role="alert"
+                  style={{ display: 'flex', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, marginBottom: 12 }}
+                >
+                  <AlertCircle size={14} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontSize: 13, color: '#ef4444', lineHeight: 1.4 }}>{googleErr.message}</span>
+                </div>
+              )}
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '14px 0 20px', color: 'rgba(241,245,249,0.35)', fontSize: 12 }}>
                 <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.1)' }} />
                 Or continue with email
                 <span style={{ height: 1, flex: 1, background: 'rgba(255,255,255,0.1)' }} />
               </div>
+
+              {err && (
+                <div
+                  role="alert"
+                  style={{ display: 'flex', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, marginBottom: 16 }}
+                >
+                  <AlertCircle size={14} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontSize: 13, color: '#ef4444', lineHeight: 1.4 }}>{err.message}</span>
+                </div>
+              )}
 
               <div style={{ marginBottom: 16 }}>
                 <label htmlFor="auth-email" style={{ display: 'block', fontSize: 13, fontWeight: 600, color: 'rgba(241,245,249,0.7)', marginBottom: 7 }}>
@@ -633,6 +643,15 @@ export default function AuthModal() {
           {/* ─ PHASE: OTP ─ */}
           {phase === 'otp' && (
             <div>
+              {err && (
+                <div
+                  role="alert"
+                  style={{ display: 'flex', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, marginBottom: 20 }}
+                >
+                  <AlertCircle size={14} color="#ef4444" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontSize: 13, color: '#ef4444', lineHeight: 1.4 }}>{err.message}</span>
+                </div>
+              )}
               <button
                 onClick={() => { setPhase('email'); setErr(null); setOtp(['', '', '', '', '', '']); }}
                 aria-label="Back to email input"
