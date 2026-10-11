@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { saveJob, unsaveJob, getSavedJobs } from '../controllers/savedJobController';
-import { authenticateToken } from '../middleware/auth';
+import { saveJob, unsaveJob, getSavedJobs } from '../controllers/savedJobController.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = Router();
 

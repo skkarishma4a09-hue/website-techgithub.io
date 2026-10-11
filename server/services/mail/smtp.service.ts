@@ -5,8 +5,8 @@
  */
 
 import nodemailer from 'nodemailer';
-import { env } from '../../config/env';
-import { getOtpEmailHtml, getOtpEmailText } from './otp-email.template';
+import { env } from '../../config/env.js';
+import { getOtpEmailHtml, getOtpEmailText } from './otp-email.template.js';
 
 // ─────────────────────────────────────────────
 // SMTP configuration status

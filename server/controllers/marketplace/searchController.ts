@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { paginateQuery, parseJson } from '../../utils/marketplace';
-import { getUserOrThrow } from '../../utils/marketplace';
-import { serializeService } from './creatorController';
+import { prisma } from '../../config/prisma.js';
+import { paginateQuery, parseJson } from '../../utils/marketplace.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
+import { serializeService } from './creatorController.js';
 
 export async function search(req: Request, res: Response) {
   try {

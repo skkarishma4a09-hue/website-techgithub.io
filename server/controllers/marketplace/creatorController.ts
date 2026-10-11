@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { parseJson, colorFromId, initialsOf, paginateQuery } from '../../utils/marketplace';
-import { getUserOrThrow } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { parseJson, colorFromId, initialsOf, paginateQuery } from '../../utils/marketplace.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
 
 async function creatorStats(user: any) {
   const [reviews, orders, followers, services] = await Promise.all([

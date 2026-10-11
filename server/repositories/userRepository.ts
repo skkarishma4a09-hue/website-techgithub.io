@@ -1,4 +1,4 @@
-import { prisma } from '../config/prisma';
+import { prisma } from '../config/prisma.js';
 export type Role = 'USER' | 'CREATOR' | 'JOB_SEEKER' | 'RECRUITER' | 'ADMIN';
 
 // Helper so string literals work

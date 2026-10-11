@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getDb } from '../config/database';
-import { parseJobFields } from './jobController';
+import { getDb } from '../config/database.js';
+import { parseJobFields } from './jobController.js';
 
 export async function saveJob(req: Request, res: Response, next: NextFunction) {
   try {

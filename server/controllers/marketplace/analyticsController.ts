@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { getUserOrThrow, parseJson } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { getUserOrThrow, parseJson } from '../../utils/marketplace.js';
 
 export async function creatorAnalytics(req: Request, res: Response) {
   try {

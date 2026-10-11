@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getDb } from '../config/database';
-import { Job } from '../models/types';
+import { getDb } from '../config/database.js';
+import { Job } from '../models/types.js';
 
 export async function getJobs(req: Request, res: Response, next: NextFunction) {
   try {

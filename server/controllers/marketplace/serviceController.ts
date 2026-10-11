@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { parseJson, paginateQuery } from '../../utils/marketplace';
-import { getUserOrThrow } from '../../utils/marketplace';
-import { serializeService } from './creatorController';
+import { prisma } from '../../config/prisma.js';
+import { parseJson, paginateQuery } from '../../utils/marketplace.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
+import { serializeService } from './creatorController.js';
 
 async function enrich(list: any[]) {
   const out = [];

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { applyToJob, getApplications, updateApplicationStatus } from '../controllers/applicationController';
-import { authenticateToken } from '../middleware/auth';
-import { validateApplicationStatus } from '../middleware/validate';
+import { applyToJob, getApplications, updateApplicationStatus } from '../controllers/applicationController.js';
+import { authenticateToken } from '../middleware/auth.js';
+import { validateApplicationStatus } from '../middleware/validate.js';
 
 const router = Router();
 

@@ -2,7 +2,7 @@ import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import path from 'path';
 import fs from 'fs';
-import { env } from './env';
+import { env } from './env.js';
 
 let dbInstance: Database | null = null;
 

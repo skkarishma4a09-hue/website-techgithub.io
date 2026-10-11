@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AdminController, requireAdminKey } from '../controllers/adminController';
+import { AdminController, requireAdminKey } from '../controllers/adminController.js';
 
 const router = Router();
 

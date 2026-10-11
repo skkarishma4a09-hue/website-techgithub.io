@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { getUserOrThrow } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
 
 export async function listNotifications(req: Request, res: Response) {
   try {

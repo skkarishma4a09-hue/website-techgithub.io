@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import authRoutes from './authRoutes';
-import profileRoutes from './profileRoutes';
-import jobRoutes from './jobRoutes';
-import savedJobRoutes from './savedJobRoutes';
-import applicationRoutes from './applicationRoutes';
-import alertRoutes from './alertRoutes';
-import adminRoutes from './adminRoutes';
-import marketplaceRoutes from './marketplaceRoutes';
+import authRoutes from './authRoutes.js';
+import profileRoutes from './profileRoutes.js';
+import jobRoutes from './jobRoutes.js';
+import savedJobRoutes from './savedJobRoutes.js';
+import applicationRoutes from './applicationRoutes.js';
+import alertRoutes from './alertRoutes.js';
+import adminRoutes from './adminRoutes.js';
+import marketplaceRoutes from './marketplaceRoutes.js';
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { parseJson, paginateQuery, notify } from '../../utils/marketplace';
-import { getUserOrThrow } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { parseJson, paginateQuery, notify } from '../../utils/marketplace.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
 
 function ser(p: any) {
   return { ...p, milestones: parseJson(p.milestones, []), checklist: parseJson(p.checklist, []), deliverables: parseJson(p.deliverables, []), comments: parseJson(p.comments, []), activity: parseJson(p.activity, []) };

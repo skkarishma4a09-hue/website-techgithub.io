@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/env';
-import { prisma } from '../config/prisma';
-import { sendError } from '../utils/apiResponse';
-import type { Role } from '../repositories/userRepository';
+import { env } from '../config/env.js';
+import { prisma } from '../config/prisma.js';
+import { sendError } from '../utils/apiResponse.js';
+import type { Role } from '../repositories/userRepository.js';
 
 export interface AuthUser {
   id: string;

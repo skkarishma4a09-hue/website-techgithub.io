@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { env } from '../config/env';
-import { UserRepository } from '../repositories/userRepository';
-import { SessionRepository } from '../repositories/sessionRepository';
-import { hashPassword, verifyPassword } from '../utils/password';
-import { logAuditEvent } from '../utils/auditLogger';
-import { createVerificationToken, verifyToken, TokenType } from '../utils/email';
-import type { Role } from '../repositories/userRepository';
+import { env } from '../config/env.js';
+import { UserRepository } from '../repositories/userRepository.js';
+import { SessionRepository } from '../repositories/sessionRepository.js';
+import { hashPassword, verifyPassword } from '../utils/password.js';
+import { logAuditEvent } from '../utils/auditLogger.js';
+import { createVerificationToken, verifyToken, TokenType } from '../utils/email.js';
+import type { Role } from '../repositories/userRepository.js';
 
 export class AuthService {
   static async register(data: { name: string; email: string; password: string; role?: Role }, meta?: { ip?: string; userAgent?: string }) {

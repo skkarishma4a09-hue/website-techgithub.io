@@ -1,20 +1,20 @@
 import { Router } from 'express';
-import { authenticateToken, requireRole } from '../middleware/auth';
-import * as creators from '../controllers/marketplace/creatorController';
-import * as services from '../controllers/marketplace/serviceController';
-import * as orders from '../controllers/marketplace/orderController';
-import * as projects from '../controllers/marketplace/projectController';
-import * as reviews from '../controllers/marketplace/reviewController';
-import * as social from '../controllers/marketplace/socialController';
-import * as chat from '../controllers/marketplace/chatController';
-import * as notifs from '../controllers/marketplace/notificationController';
-import * as analytics from '../controllers/marketplace/analyticsController';
-import * as ai from '../controllers/marketplace/aiController';
-import * as search from '../controllers/marketplace/searchController';
-import { aiGenerationRateLimiter } from '../middleware/rateLimiter';
-import { MultiAgentOrchestrator } from '../services/multiAgentOrchestrator';
-import { MLRecommendationEngine } from '../services/mlRecommendationEngine';
-import { prisma } from '../config/prisma';
+import { authenticateToken, requireRole } from '../middleware/auth.js';
+import * as creators from '../controllers/marketplace/creatorController.js';
+import * as services from '../controllers/marketplace/serviceController.js';
+import * as orders from '../controllers/marketplace/orderController.js';
+import * as projects from '../controllers/marketplace/projectController.js';
+import * as reviews from '../controllers/marketplace/reviewController.js';
+import * as social from '../controllers/marketplace/socialController.js';
+import * as chat from '../controllers/marketplace/chatController.js';
+import * as notifs from '../controllers/marketplace/notificationController.js';
+import * as analytics from '../controllers/marketplace/analyticsController.js';
+import * as ai from '../controllers/marketplace/aiController.js';
+import * as search from '../controllers/marketplace/searchController.js';
+import { aiGenerationRateLimiter } from '../middleware/rateLimiter.js';
+import { MultiAgentOrchestrator } from '../services/multiAgentOrchestrator.js';
+import { MLRecommendationEngine } from '../services/mlRecommendationEngine.js';
+import { prisma } from '../config/prisma.js';
 
 const router = Router();
 

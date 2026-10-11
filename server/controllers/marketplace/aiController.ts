@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { prisma } from '../../config/prisma';
-import { getUserOrThrow, parseJson } from '../../utils/marketplace';
-import { sendError } from '../../utils/apiResponse';
-import { AiGenerationError, generateAiContent } from '../../services/aiGenerationService';
+import { prisma } from '../../config/prisma.js';
+import { getUserOrThrow, parseJson } from '../../utils/marketplace.js';
+import { sendError } from '../../utils/apiResponse.js';
+import { AiGenerationError, generateAiContent } from '../../services/aiGenerationService.js';
 
 const generateSchema = z.object({
   toolId: z.enum([

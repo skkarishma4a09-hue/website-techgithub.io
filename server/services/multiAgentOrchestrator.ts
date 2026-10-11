@@ -10,9 +10,9 @@
  */
 
 import { z } from 'zod';
-import { env } from '../config/env';
-import { prisma } from '../config/prisma';
-import { MLRecommendationEngine, ContentQualityAudit } from './mlRecommendationEngine';
+import { env } from '../config/env.js';
+import { prisma } from '../config/prisma.js';
+import { MLRecommendationEngine, ContentQualityAudit } from './mlRecommendationEngine.js';
 
 export type JobState = 'QUEUED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 

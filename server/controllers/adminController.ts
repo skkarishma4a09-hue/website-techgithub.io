@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { sendSuccess, sendError } from '../utils/apiResponse';
+import { sendSuccess, sendError } from '../utils/apiResponse.js';
 import {
   getSmtpStatusInfo,
   testSmtpConnection,
   sendSmtpTestEmail,
   isSmtpConfigured,
-} from '../services/mail/smtp.service';
-import { env } from '../config/env';
+} from '../services/mail/smtp.service.js';
+import { env } from '../config/env.js';
 import { z } from 'zod';
 
 /**

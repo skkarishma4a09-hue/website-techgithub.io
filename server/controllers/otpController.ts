@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { sendSuccess, sendError } from '../utils/apiResponse';
-import { requestOtp, verifyOtp, resendOtp } from '../services/otpService';
+import { sendSuccess, sendError } from '../utils/apiResponse.js';
+import { requestOtp, verifyOtp, resendOtp } from '../services/otpService.js';
 import { z } from 'zod';
 
 // ─────────────────────────────────────────────

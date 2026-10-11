@@ -1,9 +1,9 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import { env } from './config/env';
-import { securityHeaders, corsMiddleware } from './middleware/security';
-import apiRouter from './routes/index';
-import { errorHandler } from './middleware/errorHandler';
+import { env } from './config/env.js';
+import { securityHeaders, corsMiddleware } from './middleware/security.js';
+import apiRouter from './routes/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 

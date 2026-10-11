@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { parseJson, paginateQuery } from '../../utils/marketplace';
-import { getUserOrThrow, notify } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { parseJson, paginateQuery } from '../../utils/marketplace.js';
+import { getUserOrThrow, notify } from '../../utils/marketplace.js';
 import { z } from 'zod';
 
 const createOrderSchema = z.object({

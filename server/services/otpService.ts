@@ -12,11 +12,11 @@
  */
 
 import crypto from 'crypto';
-import { prisma } from '../config/prisma';
-import { env } from '../config/env';
-import { UserRepository } from '../repositories/userRepository';
-import { logAuditEvent } from '../utils/auditLogger';
-import { sendOtpEmail, SmtpNotConfiguredError, SmtpDeliveryError, maskEmail } from './mail/smtp.service';
+import { prisma } from '../config/prisma.js';
+import { env } from '../config/env.js';
+import { UserRepository } from '../repositories/userRepository.js';
+import { logAuditEvent } from '../utils/auditLogger.js';
+import { sendOtpEmail, SmtpNotConfiguredError, SmtpDeliveryError, maskEmail } from './mail/smtp.service.js';
 
 // ─────────────────────────────────────────────
 // OTP generation

@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getJobs, getJobById, createJob, updateJob, deleteJob } from '../controllers/jobController';
-import { authenticateToken, requireAdmin } from '../middleware/auth';
-import { validateJobInput } from '../middleware/validate';
+import { getJobs, getJobById, createJob, updateJob, deleteJob } from '../controllers/jobController.js';
+import { authenticateToken, requireAdmin } from '../middleware/auth.js';
+import { validateJobInput } from '../middleware/validate.js';
 
 const router = Router();
 

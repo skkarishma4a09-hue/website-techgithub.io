@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { prisma } from '../../config/prisma';
-import { notify } from '../../utils/marketplace';
-import { getUserOrThrow } from '../../utils/marketplace';
+import { prisma } from '../../config/prisma.js';
+import { notify } from '../../utils/marketplace.js';
+import { getUserOrThrow } from '../../utils/marketplace.js';
 
 export async function listConversations(req: Request, res: Response) {
   try {

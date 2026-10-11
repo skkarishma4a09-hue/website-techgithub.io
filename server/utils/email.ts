@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { prisma } from '../config/prisma';
+import { prisma } from '../config/prisma.js';
 export const TokenType = {
   EMAIL_VERIFICATION: 'EMAIL_VERIFICATION',
   PASSWORD_RESET: 'PASSWORD_RESET',

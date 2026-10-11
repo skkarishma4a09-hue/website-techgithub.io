@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getDb } from '../config/database';
+import { getDb } from '../config/database.js';
 
 export async function createAlert(req: Request, res: Response, next: NextFunction) {
   try {

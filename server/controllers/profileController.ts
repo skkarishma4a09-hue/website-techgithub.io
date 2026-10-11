@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-import { ProfileService } from '../services/profileService';
-import { sendSuccess, sendError } from '../utils/apiResponse';
+import { ProfileService } from '../services/profileService.js';
+import { sendSuccess, sendError } from '../utils/apiResponse.js';
 import {
   updateProfileSchema,
   educationSchema,
   experienceSchema,
   projectSchema,
   skillSchema,
-} from '../validators/profileValidator';
+} from '../validators/profileValidator.js';
 
 export class ProfileController {
   static async getProfile(req: Request, res: Response, next: NextFunction) {

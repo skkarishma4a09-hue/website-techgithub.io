@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { createAlert, getAlerts, updateAlert, deleteAlert } from '../controllers/alertController';
-import { authenticateToken } from '../middleware/auth';
+import { createAlert, getAlerts, updateAlert, deleteAlert } from '../controllers/alertController.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = Router();
 

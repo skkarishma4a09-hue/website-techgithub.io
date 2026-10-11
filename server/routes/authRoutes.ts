@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { AuthController } from '../controllers/authController';
-import { OTPController } from '../controllers/otpController';
-import { authenticateToken } from '../middleware/auth';
-import { authRateLimiter, otpRateLimiter } from '../middleware/rateLimiter';
+import { AuthController } from '../controllers/authController.js';
+import { OTPController } from '../controllers/otpController.js';
+import { authenticateToken } from '../middleware/auth.js';
+import { authRateLimiter, otpRateLimiter } from '../middleware/rateLimiter.js';
 
 const router = Router();
 

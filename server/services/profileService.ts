@@ -1,4 +1,4 @@
-import { ProfileRepository } from '../repositories/profileRepository';
+import { ProfileRepository } from '../repositories/profileRepository.js';
 
 export class ProfileService {
   static calculateCompletion(profile: any) {
